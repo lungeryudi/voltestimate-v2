@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { useStore } from '../../stores';
-import { ProjectList } from '../../components/projects/ProjectList';
-import { ProjectCard } from '../../components/projects/ProjectCard';
-import { CreateProjectModal } from '../../components/projects/CreateProjectModal';
+import { useState, useMemo } from 'react';
+import { useStore } from '../shared/lib/store';
+import { ProjectList } from '../features/projects/components/ProjectList';
+import { ProjectCard } from '../features/projects/components/ProjectCard';
+import { CreateProjectModal } from '../features/projects/components/CreateProjectModal';
 import { Search, Grid3X3, List, Plus, Filter } from 'lucide-react';
-import type { Project } from '../../types';
 
 type ViewMode = 'grid' | 'list';
 type SortBy = 'name' | 'date' | 'status' | 'value';

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Project, Blueprint, Device, Estimate, Conflict, Room, SystemType } from '../types';
+import type { Project, Blueprint, Device, Estimate, Conflict, SystemType } from '../types';
 
 interface AppState {
   // Projects

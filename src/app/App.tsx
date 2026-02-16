@@ -1,12 +1,11 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AppShell } from './components/layout/AppShell';
-import { ProjectsPage } from './pages/ProjectsPage';
-import { ProjectDetailPage } from './pages/ProjectDetailPage';
-import { EstimatesPage } from './pages/EstimatesPage';
-import { BlueprintsPage } from './pages/BlueprintsPage';
-import { SettingsPage } from './pages/SettingsPage';
-import './index.css';
+import { AppShell } from '../shared/components/layout/AppShell';
+import { ProjectsPage } from './ProjectsPage';
+import { ProjectDetailPage } from './ProjectDetailPage';
+import { EstimatesPage } from './EstimatesPage';
+import { BlueprintsPage } from './BlueprintsPage';
+import { SettingsPage } from './SettingsPage';
+import '../index.css';
 
 function App() {
   return (

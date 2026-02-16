@@ -1,12 +1,12 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import type { Blueprint, Device } from '../../types';
-import { useStore } from '../../stores';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import type { Blueprint, Device } from '../../../shared/types';
+import { useStore } from '../../../shared/lib/store';
 import { ConflictOverlay, ConflictListPanel } from './ConflictOverlay';
 import { DeviceInfoPopup } from './DeviceInfoPopup';
-import { validateAllDevices } from '../../utils/validation';
+import { validateAllDevices } from '../../../shared/utils/validation';
 import { 
-  ZoomIn, ZoomOut, Move, RotateCcw, Layers, 
-  Flame, Video, Lock, X, AlertTriangle 
+  ZoomIn, ZoomOut, RotateCcw, Layers, 
+  Flame, Video, Lock, AlertTriangle 
 } from 'lucide-react';
 
 interface BlueprintViewerProps {
@@ -22,7 +22,7 @@ export const BlueprintViewer: React.FC<BlueprintViewerProps> = ({ blueprint }) =
     visibleLayers, toggleLayer,
     showConflictPanel, setShowConflictPanel,
     updateDevice, setConflicts, autoFixConflict,
-    blueprints, setSelectedBlueprint
+    blueprints
   } = useStore();
   
   const [isDragging, setIsDragging] = useState(false);
@@ -274,7 +274,7 @@ export const BlueprintViewer: React.FC<BlueprintViewerProps> = ({ blueprint }) =
       {/* Conflict List Panel */}
       <ConflictListPanel
         devices={localBlueprint.devices}
-        onConflictClick={(device, conflict) => {
+        onConflictClick={(device) => {
           setSelectedDevice(device);
           // Center view on device
           const newPan = {

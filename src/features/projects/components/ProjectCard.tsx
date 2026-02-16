@@ -1,17 +1,16 @@
-import React from 'react';
+import { useState, type FC, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Project } from '../../types';
+import type { Project } from '../../../shared/types';
 import { 
   MapPin, 
   Calendar, 
   Image as ImageIcon, 
   AlertCircle,
   MoreVertical,
-  Edit2,
   Copy,
   Trash2
 } from 'lucide-react';
-import { useStore } from '../../stores';
+import { useStore } from '../../../shared/lib/store';
 
 interface ProjectCardProps {
   project: Project;
@@ -24,10 +23,10 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: 'bg-red-500/20 text-red-400 border-red-500/30',
 };
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+export const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
   const navigate = useNavigate();
   const { duplicateProject, deleteProject } = useStore();
-  const [showMenu, setShowMenu] = React.useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const blueprintCount = project.blueprints?.length || 0;
   const hasConflicts = project.conflictCount > 0;
@@ -36,13 +35,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     navigate(`/projects/${project.id}`);
   };
 
-  const handleDuplicate = (e: React.MouseEvent) => {
+  const handleDuplicate = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     duplicateProject(project.id);
     setShowMenu(false);
   };
 
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (confirm('Are you sure you want to delete this project?')) {
       deleteProject(project.id);

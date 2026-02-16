@@ -2,6 +2,15 @@
  * Core types for VoltEstimate Pro
  */
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export interface Polygon {
+  points: Point[];
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -25,6 +34,7 @@ export interface Blueprint {
   rooms: Room[];
   width: number;
   height: number;
+  analysisStatus?: 'pending' | 'analyzing' | 'completed' | 'failed';
 }
 
 export interface Room {

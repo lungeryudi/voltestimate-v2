@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import type { Device, DeviceType, SystemType } from '../../types';
+import { useState } from 'react';
+import type { Device, DeviceType, SystemType } from '../../../shared/types';
 import { X, Edit2, Check, RotateCw } from 'lucide-react';
 
 interface DeviceInfoPopupProps {

@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import type { Device, Conflict } from '../../types';
+import { useState, useMemo } from 'react';
+import type { Device, Conflict } from '../../../shared/types';
 import { AlertTriangle, AlertCircle, X, Wrench, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ConflictOverlayProps {
@@ -16,7 +16,7 @@ interface ConflictTooltipProps {
   onAutoFix: () => void;
 }
 
-const ConflictTooltip: React.FC<ConflictTooltipProps> = ({ conflict, device, onClose, onAutoFix }) => {
+const ConflictTooltip: React.FC<ConflictTooltipProps> = ({ conflict, onClose, onAutoFix }) => {
   return (
     <div className="absolute z-50 bg-white rounded-lg shadow-xl border border-red-200 p-3 min-w-64 animate-in fade-in zoom-in-95 duration-150">
       <div className="flex items-start justify-between mb-2">
@@ -72,7 +72,6 @@ const DeviceHalo: React.FC<DeviceHaloProps> = ({ device, scale, onDeviceClick, o
   const [activeConflict, setActiveConflict] = useState<Conflict | null>(null);
   
   const hasErrors = device.conflicts.some(c => c.severity === 'error');
-  const hasWarnings = device.conflicts.some(c => c.severity === 'warning');
   
   if (device.conflicts.length === 0) return null;
   

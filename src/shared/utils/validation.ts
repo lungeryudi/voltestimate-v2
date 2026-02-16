@@ -107,7 +107,7 @@ function checkNFPASpacing(device: Device, context: ValidationContext): Conflict 
       message: `${device.name} is ${(minDistance / 12).toFixed(1)}ft from nearest ${nearestDevice.name}, exceeding NFPA 72 maximum of ${NFPA_SPACING[device.type]}ft`,
       relatedDeviceId: nearestDevice.id,
       suggestion: `Add a ${device.type} between these devices`,
-      autoFix: null // Can't auto-fix, needs new device
+      autoFix: undefined // Can't auto-fix, needs new device
     };
   }
   
@@ -167,7 +167,7 @@ function checkBoundary(device: Device, context: ValidationContext): Conflict | n
       severity: 'error',
       message: `${device.name} is placed outside all room boundaries`,
       suggestion: 'Move device inside a room',
-      autoFix: null // Can't auto-fix, user must place manually
+      autoFix: undefined // Can't auto-fix, user must place manually
     };
   }
   
