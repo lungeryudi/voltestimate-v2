@@ -1,7 +1,17 @@
 import { create } from 'zustand';
+import type { User, Session } from '@supabase/supabase-js';
 import type { Project, Blueprint, Device, Estimate, Conflict, SystemType } from '../types';
+import type { Profile } from '../types/database';
 
 interface AppState {
+  // Auth
+  user: User | null;
+  session: Session | null;
+  profile: Profile | null;
+  isAuthenticated: boolean;
+  setAuth: (user: User | null, session: Session | null, profile: Profile | null) => void;
+  clearAuth: () => void;
+  
   // Projects
   projects: Project[];
   selectedProject: Project | null;
@@ -47,6 +57,14 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set, get) => ({
+  // Auth
+  user: null,
+  session: null,
+  profile: null,
+  isAuthenticated: false,
+  setAuth: (user, session, profile) => set({ user, session, profile, isAuthenticated: !!user }),
+  clearAuth: () => set({ user: null, session: null, profile: null, isAuthenticated: false }),
+  
   // Projects
   projects: [],
   selectedProject: null,

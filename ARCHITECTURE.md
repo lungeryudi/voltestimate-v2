@@ -16,6 +16,15 @@ src/
 │   └── SettingsPage.tsx         # Settings page
 │
 ├── features/                     # Feature-based modules
+│   ├── auth/
+│   │   ├── components/
+│   │   │   ├── LoginPage.tsx      # Authentication page
+│   │   │   └── ProtectedRoute.tsx # Route guard for auth
+│   │   ├── hooks/
+│   │   │   └── useAuth.ts         # Auth state management
+│   │   └── services/
+│   │       └── authService.ts     # Auth API calls
+│   │
 │   ├── projects/
 │   │   └── components/
 │   │       ├── CreateProjectModal.tsx
@@ -33,6 +42,11 @@ src/
 │           ├── EstimateList.tsx
 │           └── StatusBadge.tsx
 │
+├── services/                     # External services
+│   ├── supabase.ts              # Supabase client setup
+│   ├── database.ts              # Database operations
+│   └── aiVisionEngine.ts        # AI vision service
+│
 ├── shared/                       # Shared resources
 │   ├── components/
 │   │   └── layout/
@@ -40,16 +54,16 @@ src/
 │   │       └── Sidebar.tsx      # Navigation sidebar
 │   │
 │   ├── lib/
-│   │   └── store.ts             # Zustand store
+│   │   └── store.ts             # Zustand global store
 │   │
 │   ├── types/
-│   │   └── index.ts             # Core TypeScript types
+│   │   ├── index.ts             # Core TypeScript types
+│   │   └── database.ts          # Database schema types
 │   │
 │   └── utils/
 │       └── validation.ts        # Validation utilities
 │
-└── services/                     # External services
-    └── aiVisionEngine.ts        # AI vision service
+└── index.css                     # Global styles
 ```
 
 ## Key Architectural Decisions
@@ -57,9 +71,20 @@ src/
 ### 1. Feature-Based Organization
 - **Why:** Co-locate related code per feature
 - **Benefit:** Features are self-contained and easily discoverable
-- **Current Features:** projects, blueprints, estimates
+- **Current Features:** auth, projects, blueprints, estimates
 
-### 2. Zustand for State Management
+### 2. Supabase Integration
+- **Auth:** Supabase Auth with email/password
+- **Database:** PostgreSQL via Supabase client
+- **Types:** Database types defined in `shared/types/database.ts`
+- **Security:** Row Level Security (RLS) policies required
+
+### 3. Authentication Flow
+```
+LoginPage → useAuth → supabase.auth → ProtectedRoute → App
+```
+
+### 4. Zustand for State Management
 - **Location:** `shared/lib/store.ts`
 - **Pattern:** Single global store with feature-specific state
 - **Benefits:** 
@@ -67,10 +92,11 @@ src/
   - TypeScript-friendly
   - Minimal boilerplate
 
-### 3. Import Conventions
+### 5. Import Conventions
 ```typescript
 // External libraries first
 import { useState } from 'react';
+import { useAuth } from '../../features/auth/hooks/useAuth';
 
 // Then shared imports
 import { useStore } from '../../shared/lib/store';
@@ -80,8 +106,9 @@ import type { Project } from '../../shared/types';
 import { ProjectCard } from './ProjectCard';
 ```
 
-### 4. Type Safety
+### 6. Type Safety
 - All business entities typed in `shared/types/index.ts`
+- Database types in `shared/types/database.ts`
 - Strict TypeScript mode enabled
 - No `any` types allowed
 
@@ -93,13 +120,23 @@ import { ProjectCard } from './ProjectCard';
 ✓ Zero errors, zero warnings
 ```
 
+## Environment Variables
+
+Required in `.env`:
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+```
+
+See `.env.example` for reference.
+
 ## Next Steps (for future development)
 
-1. **Auth Feature** - Add authentication with Supabase
-2. **API Layer** - Create service layer for Supabase integration
-3. **Route Guards** - Add ProtectedRoute for authenticated routes
-4. **Feature Stores** - Split store into feature-specific slices
-5. **Testing** - Add test utilities and sample tests
+1. **Database Schema** - Set up Supabase tables with RLS policies
+2. **API Layer** - Replace mock data with real Supabase queries
+3. **Feature Stores** - Split store into feature-specific slices
+4. **Testing** - Add test utilities and sample tests
+5. **Error Handling** - Add global error boundary and toast notifications
 
 ## Migration Notes
 
@@ -107,3 +144,4 @@ import { ProjectCard } from './ProjectCard';
 - Old folders (components/, pages/, stores/, types/, utils/) removed
 - Index.html updated to point to new main.tsx location
 - Build output verified working
+- Auth foundation added with Supabase integration
