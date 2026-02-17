@@ -43,7 +43,20 @@ export function LoginPage() {
           }
         }
 
-        setStatus('Account created! Redirecting...');
+        // Auto sign in after signup
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError) {
+          setError('Account created but sign in failed. Please sign in manually.');
+          setIsSignUp(false);
+          setStatus('');
+          return;
+        }
+
+        setStatus('Account created and signed in! Redirecting...');
         setTimeout(() => navigate('/projects'), 1000);
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
