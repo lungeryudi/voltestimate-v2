@@ -5,11 +5,10 @@
 
 import { useState, useCallback } from 'react';
 import { 
-  analyzeBlueprintAndPlaceDevices, 
-  placementsToDevices,
+  analyzeBlueprintAndPlaceDevices,
   type PlacementResult 
 } from '../../../services/devicePlacementAI';
-import type { SystemType, Device, Room } from '../../../shared/types';
+import type { SystemType } from '../../../shared/types';
 
 export interface AIAnalysisState {
   isAnalyzing: boolean;

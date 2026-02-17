@@ -1,9 +1,43 @@
-import { useState } from 'react';
-import { User, Building2, Link2, Moon, Sun, Bell } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { User, Building2, Link2, Moon, Sun, Bell, History } from 'lucide-react';
+import { ZohoConnectButton, MondayConnectButton } from '../features/integrations/components';
+import { getSyncLogs } from '../services/zohoIntegration';
+import { useAuth } from '../features/auth/hooks/useAuth';
+
+interface SyncLog {
+  id: string;
+  provider: string;
+  entity_type: string;
+  status: 'success' | 'error';
+  created_at: string;
+  external_id: string;
+}
 
 export const SettingsPage = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'profile' | 'company' | 'integrations' | 'appearance'>('profile');
   const [darkMode, setDarkMode] = useState(true);
+  const [syncLogs, setSyncLogs] = useState<SyncLog[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'integrations' && user) {
+      loadSyncLogs();
+    }
+  }, [activeTab, user]);
+
+  const loadSyncLogs = async () => {
+    if (!user) return;
+    setLoadingLogs(true);
+    try {
+      const logs = await getSyncLogs(user.id);
+      setSyncLogs(logs);
+    } catch (err) {
+      console.error('Failed to load sync logs:', err);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
@@ -11,6 +45,23 @@ export const SettingsPage = () => {
     { id: 'integrations', label: 'Integrations', icon: Link2 },
     { id: 'appearance', label: 'Appearance', icon: darkMode ? Moon : Sun },
   ] as const;
+
+  const getProviderIcon = (provider: string) => {
+    switch (provider) {
+      case 'zoho':
+        return <span className="text-blue-400 font-bold">Z</span>;
+      case 'monday':
+        return <span className="text-fuchsia-400 font-bold">M</span>;
+      default:
+        return <Link2 className="w-4 h-4 text-slate-400" />;
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    return status === 'success' 
+      ? <span className="text-green-400 text-xs">✓ Success</span>
+      : <span className="text-red-400 text-xs">✗ Error</span>;
+  };
 
   return (
     <div className="p-6 lg:p-8 max-w-5xl mx-auto">
@@ -53,7 +104,7 @@ export const SettingsPage = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold text-white">
-                    JD
+                    {user?.email?.[0]?.toUpperCase() || 'U'}
                   </div>
                   <div>
                     <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition-colors">
@@ -65,30 +116,23 @@ export const SettingsPage = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">First Name</label>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
                     <input
                       type="text"
-                      defaultValue="John"
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                      defaultValue={user?.user_metadata?.full_name || ''}
+                      placeholder="Enter your name"
+                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Last Name</label>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
                     <input
-                      type="text"
-                      defaultValue="Doe"
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                      type="email"
+                      defaultValue={user?.email || ''}
+                      disabled
+                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-slate-400 cursor-not-allowed"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
-                  <input
-                    type="email"
-                    defaultValue="john@example.com"
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
-                  />
                 </div>
 
                 <div>
@@ -96,7 +140,7 @@ export const SettingsPage = () => {
                   <input
                     type="tel"
                     placeholder="+1 (555) 123-4567"
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
@@ -118,8 +162,8 @@ export const SettingsPage = () => {
                   <label className="block text-sm font-medium text-slate-300 mb-2">Company Name</label>
                   <input
                     type="text"
-                    defaultValue="Volt Security Systems"
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                    placeholder="Volt Security Systems"
+                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
@@ -128,7 +172,7 @@ export const SettingsPage = () => {
                   <input
                     type="text"
                     placeholder="Enter your contractor license number"
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
@@ -137,7 +181,7 @@ export const SettingsPage = () => {
                   <textarea
                     rows={3}
                     placeholder="Enter your business address"
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
                   />
                 </div>
 
@@ -147,7 +191,7 @@ export const SettingsPage = () => {
                     <input
                       type="number"
                       defaultValue="85"
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                     />
                   </div>
                   <div>
@@ -155,7 +199,7 @@ export const SettingsPage = () => {
                     <input
                       type="number"
                       defaultValue="25"
-                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -170,25 +214,19 @@ export const SettingsPage = () => {
           )}
 
           {activeTab === 'integrations' && (
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Zoho CRM */}
               <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                      <span className="text-blue-400 font-bold">Z</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-white">Zoho CRM</h3>
-                      <p className="text-slate-400 text-sm">Sync projects and proposals with Zoho CRM</p>
-                    </div>
-                  </div>
-                  <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition-colors">
-                    Connect
-                  </button>
-                </div>
+                <ZohoConnectButton />
               </div>
 
+              {/* Monday.com */}
               <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                <MondayConnectButton />
+              </div>
+
+              {/* QuickBooks - Coming Soon */}
+              <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 opacity-50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
@@ -199,12 +237,13 @@ export const SettingsPage = () => {
                       <p className="text-slate-400 text-sm">Sync estimates and invoices with QuickBooks</p>
                     </div>
                   </div>
-                  <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition-colors">
-                    Connect
+                  <button disabled className="px-4 py-2 bg-slate-800 text-slate-500 rounded-lg text-sm font-medium cursor-not-allowed">
+                    Coming Soon
                   </button>
                 </div>
               </div>
 
+              {/* Stripe - Coming Soon */}
               <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6 opacity-50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -213,13 +252,54 @@ export const SettingsPage = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white">Stripe</h3>
-                      <p className="text-slate-400 text-sm">Accept online payments (Coming Soon)</p>
+                      <p className="text-slate-400 text-sm">Accept online payments</p>
                     </div>
                   </div>
                   <button disabled className="px-4 py-2 bg-slate-800 text-slate-500 rounded-lg text-sm font-medium cursor-not-allowed">
-                    Soon
+                    Coming Soon
                   </button>
                 </div>
+              </div>
+
+              {/* Sync History */}
+              <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <History className="w-5 h-5 text-slate-400" />
+                  <h3 className="font-semibold text-white">Sync History</h3>
+                </div>
+                
+                {loadingLogs ? (
+                  <div className="text-center py-8 text-slate-400">
+                    Loading sync history...
+                  </div>
+                ) : syncLogs.length === 0 ? (
+                  <div className="text-center py-8 text-slate-500">
+                    <History className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>No sync history yet</p>
+                    <p className="text-sm mt-1">Sync history will appear here after you connect and sync data</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {syncLogs.map((log) => (
+                      <div key={log.id} className="flex items-center justify-between p-3 bg-slate-950 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
+                            {getProviderIcon(log.provider)}
+                          </div>
+                          <div>
+                            <p className="text-sm text-white capitalize">{log.entity_type}</p>
+                            <p className="text-xs text-slate-500">
+                              {new Date(log.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(log.status)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

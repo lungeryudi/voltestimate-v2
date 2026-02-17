@@ -13,13 +13,10 @@ import type {
   Project
 } from '../shared/types';
 import { 
-  pricingDatabase, 
   getDevicePricing, 
   getSystemPricing,
-  calculateTotalCost,
   additionalMaterials,
-  projectRates,
-  defaultTaxRate
+  projectRates
 } from './pricingDatabase';
 
 // Group devices by system and type

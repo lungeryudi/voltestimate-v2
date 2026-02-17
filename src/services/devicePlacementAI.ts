@@ -206,7 +206,7 @@ function parseAIResponse(response: string): { rooms: Room[]; devices: PlacementD
  */
 async function detectConflicts(
   devices: PlacementDevice[],
-  rooms: Room[],
+  _rooms: Room[],
   blueprintWidth: number,
   blueprintHeight: number
 ): Promise<PlacementDevice[]> {
@@ -336,7 +336,7 @@ function generateFallbackPlacement(
  */
 export function placementsToDevices(
   placements: PlacementDevice[],
-  blueprintId: string
+  _blueprintId: string
 ): Device[] {
   return placements.map(p => ({
     id: p.id,

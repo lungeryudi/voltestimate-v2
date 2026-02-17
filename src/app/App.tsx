@@ -9,6 +9,8 @@ import { BlueprintsPage } from './BlueprintsPage';
 import { SettingsPage } from './SettingsPage';
 import { EstimateDetailPage } from '../pages/EstimateDetailPage';
 import { BlueprintUploadPage } from '../features/blueprints/pages/BlueprintUploadPage';
+import ZohoCallbackPage from '../pages/integrations/ZohoCallbackPage';
+import MondayCallbackPage from '../pages/integrations/MondayCallbackPage';
 import '../index.css';
 
 function App() {
@@ -21,6 +23,24 @@ function App() {
           element={
             <ProtectedRoute requireAuth={false}>
               <LoginPage />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* OAuth Callback Routes - Semi-public, need auth */}
+        <Route 
+          path="/auth/zoho/callback" 
+          element={
+            <ProtectedRoute>
+              <ZohoCallbackPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/auth/monday/callback" 
+          element={
+            <ProtectedRoute>
+              <MondayCallbackPage />
             </ProtectedRoute>
           } 
         />
@@ -42,6 +62,7 @@ function App() {
                   <Route path="/estimates" element={<EstimatesPage />} />
                   <Route path="/estimates/:estimateId" element={<EstimateDetailPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/settings/integrations" element={<SettingsPage />} />
                 </Routes>
               </AppShell>
             </ProtectedRoute>

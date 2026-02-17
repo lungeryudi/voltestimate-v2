@@ -7,9 +7,8 @@ import { useState, useCallback, useRef } from 'react';
 import { Upload, File, X, FileText, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useStore } from '../../../shared/lib/store';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { analyzeBlueprintAndPlaceDevices, placementsToDevices } from '../../../services/devicePlacementAI';
-import { pdfToImage } from '../../../services/pdfProcessor';
-import type { PlacementDevice } from '../../../services/devicePlacementAI';
+import { analyzeBlueprintAndPlaceDevices } from '../../../services/devicePlacementAI';
+import type { SystemType } from '../../../shared/types';
 
 interface UploadFile {
   id: string;
@@ -35,7 +34,7 @@ export function BlueprintUploadPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const projectIdFromUrl = searchParams.get('projectId');
-  const { projects, blueprints, addDevice } = useStore();
+  const { projects } = useStore();
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projectIdFromUrl || '');
   const [isDragging, setIsDragging] = useState(false);
