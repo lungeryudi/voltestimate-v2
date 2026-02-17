@@ -23,8 +23,8 @@ export function LoginPage() {
     if (isSignUp) {
       const { error } = await signUp(email, password, fullName);
       if (!error) {
-        alert('Check your email for verification link!');
-        setIsSignUp(false);
+        // Account created successfully - user is auto-signed in
+        navigate(from, { replace: true });
       }
     } else {
       const { error } = await signIn(email, password);
