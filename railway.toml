@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npx serve dist -l 3000 --single"
+startCommand = "cp public/test.html dist/test.html 2>/dev/null || true && npx serve dist -l 3000 --single"
 restartPolicyType = "on_failure"
 
 [env]

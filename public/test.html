@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Auth Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #007bff; color: white; border: none; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        #result { margin-top: 20px; padding: 10px; background: #f0f0f0; white-space: pre-wrap; word-break: break-all; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Supabase Auth Test</h1>
+    <p>Testing direct Supabase connection</p>
+    
+    <input type="email" id="email" placeholder="Enter email" value="test@example.com">
+    <input type="password" id="password" placeholder="Enter password" value="password123">
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="signin()" style="margin-top: 10px; background: #28a745;">Sign In</button>
+    
+    <div id="result">Click a button to test...</div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        
+        const SUPABASE_URL = 'https://gdhqjdfytekdecfpzrls.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaHFqZGZ5dGVrZGVjZnB6cmxzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MjY5NDMsImV4cCI6MjA4NjMwMjk0M30.ulew3noJ2vhzSoQBA0bRbHVcpQZVU3iShzuZhch7dAc';
+        
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        window.signup = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.textContent = 'Signing up...';
+            resultDiv.className = '';
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    resultDiv.textContent = 'ERROR: ' + error.message;
+                    resultDiv.className = 'error';
+                } else {
+                    resultDiv.textContent = 'SUCCESS! User created:\n' + JSON.stringify(data.user, null, 2);
+                    resultDiv.className = 'success';
+                }
+            } catch (err) {
+                resultDiv.textContent = 'EXCEPTION: ' + err.message;
+                resultDiv.className = 'error';
+            }
+        };
+        
+        window.signin = async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.textContent = 'Signing in...';
+            resultDiv.className = '';
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    resultDiv.textContent = 'ERROR: ' + error.message;
+                    resultDiv.className = 'error';
+                } else {
+                    resultDiv.textContent = 'SUCCESS! Logged in as:\n' + data.user.email;
+                    resultDiv.className = 'success';
+                }
+            } catch (err) {
+                resultDiv.textContent = 'EXCEPTION: ' + err.message;
+                resultDiv.className = 'error';
+            }
+        };
+        
+        // Check current session on load
+        supabase.auth.getSession().then(({ data }) => {
+            if (data.session) {
+                document.getElementById('result').textContent = 'Already logged in as: ' + data.session.user.email;
+            }
+        });
+    </script>
+</body>
+</html>
