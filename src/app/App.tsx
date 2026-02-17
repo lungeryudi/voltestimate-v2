@@ -47,27 +47,25 @@ function App() {
           } 
         />
 
-        {/* Protected Routes */}
+        {/* All Routes Public for Testing */}
         <Route
           path="/*"
           element={
-            <ProtectedRoute>
-              <AppShell>
-                <Routes>
-                  <Route path="/" element={<Navigate to="/projects" replace />} />
-                  <Route path="/projects" element={<ProjectsPage />} />
-                  <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
-                  <Route path="/projects/:projectId/blueprints" element={<BlueprintsPage />} />
-                  <Route path="/projects/:projectId/estimates" element={<EstimatesPage />} />
-                  <Route path="/blueprints" element={<BlueprintsPage />} />
-                  <Route path="/blueprints/upload" element={<BlueprintUploadPage />} />
-                  <Route path="/estimates" element={<EstimatesPage />} />
-                  <Route path="/estimates/:estimateId" element={<EstimateDetailPage />} />
-                  <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/settings/integrations" element={<SettingsPage />} />
-                </Routes>
-              </AppShell>
-            </ProtectedRoute>
+            <AppShell>
+              <Routes>
+                <Route path="/" element={<Navigate to="/projects" replace />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
+                <Route path="/projects/:projectId/blueprints" element={<BlueprintsPage />} />
+                <Route path="/projects/:projectId/estimates" element={<EstimatesPage />} />
+                <Route path="/blueprints" element={<BlueprintsPage />} />
+                <Route path="/blueprints/upload" element={<BlueprintUploadPage />} />
+                <Route path="/estimates" element={<EstimatesPage />} />
+                <Route path="/estimates/:estimateId" element={<EstimateDetailPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/settings/integrations" element={<SettingsPage />} />
+              </Routes>
+            </AppShell>
           }
         />
       </Routes>
