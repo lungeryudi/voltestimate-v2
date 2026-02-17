@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import type { Estimate, EstimateLineItem } from '../shared/types';
+import type { Estimate } from '../shared/types';
 
 export function generateProposal(estimate: Estimate): Blob {
   const doc = new jsPDF();

@@ -7,7 +7,7 @@ import { useState, useCallback, useRef } from 'react';
 import { Upload, File, X, FileText, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useStore } from '../../../shared/lib/store';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { analyzeBlueprintAndPlaceDevices } from '../../../services/devicePlacementAI';
+// import { analyzeBlueprintAndPlaceDevices } from '../../../services/devicePlacementAI';
 import type { SystemType } from '../../../shared/types';
 
 interface UploadFile {
@@ -39,7 +39,7 @@ export function BlueprintUploadPage() {
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projectIdFromUrl || '');
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedSystemType, setSelectedSystemType] = useState<SystemType>('fire');
+  const [_selectedSystemType, _setSelectedSystemType] = useState<SystemType>("fire");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {

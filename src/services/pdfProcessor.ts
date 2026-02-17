@@ -46,7 +46,8 @@ export async function pdfToImages(pdfFile: File): Promise<PDFPage[]> {
     
     await page.render({
       canvasContext: context,
-      viewport
+      viewport,
+      canvas: canvas as any
     }).promise;
     
     const imageData = canvas.toDataURL('image/png');

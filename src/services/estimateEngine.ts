@@ -37,7 +37,6 @@ export function groupDevicesByCategory(devices: Device[]): Map<string, Device[]>
 // Calculate labor hours for a specific trade/system
 export function calculateLaborHours(devices: Device[], system: SystemType): number {
   const systemDevices = devices.filter(d => d.system === system);
-  const systemPricing = getSystemPricing(system);
   
   let totalHours = 0;
   
@@ -56,6 +55,21 @@ export function calculateMaterialCost(lineItems: EstimateLineItem[]): number {
   return lineItems
     .filter(item => item.category !== 'Labor' && item.category !== 'Engineering')
     .reduce((sum, item) => sum + item.total, 0);
+}
+
+// Calculate total cost with overhead and profit
+export function calculateTotalCost(
+  materialCost: number,
+  laborCost: number,
+  overheadPercent: number,
+  profitMargin: number
+): { subtotal: number; overhead: number; profit: number; total: number } {
+  const subtotal = materialCost + laborCost;
+  const overhead = subtotal * (overheadPercent / 100);
+  const profit = subtotal * (profitMargin / 100);
+  const total = subtotal + overhead + profit;
+  
+  return { subtotal, overhead, profit, total };
 }
 
 // Generate line items from devices
