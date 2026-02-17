@@ -43,14 +43,15 @@ export function LoginPage() {
           }
         }
 
-        // Auto sign in after signup
+        // Try to auto sign in after signup
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (signInError) {
-          setError('Account created but sign in failed. Please sign in manually.');
+          // Email confirmation required - show helpful message
+          setError(`Account created! Please check your email (${email}) for a confirmation link, or try signing in below.`);
           setIsSignUp(false);
           setStatus('');
           return;
