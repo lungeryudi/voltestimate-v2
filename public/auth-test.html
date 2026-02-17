@@ -22,8 +22,8 @@
 
   <script>
     const SUPABASE_URL = 'https://gdhqjdfytekdecfpzrls.supabase.co';
-    // This is the ANON key - it's safe to expose in frontend
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // We'll need to get the real key
+    // Anon key - safe for frontend
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaHFqZGZ5dGVrZGVjZnB6cmxzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MjY5NDMsImV4cCI6MjA4NjMwMjk0M30.ulew3noJ2vhzSoQBA0bRbHVcpQZVU3iShzuZhch7dAc';
     
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
