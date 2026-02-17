@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AppShell } from '../shared/components/layout/AppShell';
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
 import { LoginPage } from '../features/auth/components/LoginPage';
+import { SimpleLoginTest } from '../SimpleLoginTest';
 import { ProjectsPage } from './ProjectsPage';
 import { ProjectDetailPage } from './ProjectDetailPage';
 import { EstimatesPage } from './EstimatesPage';
@@ -26,6 +27,7 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route path="/test-login" element={<SimpleLoginTest />} />
 
         {/* OAuth Callback Routes - Semi-public, need auth */}
         <Route 
