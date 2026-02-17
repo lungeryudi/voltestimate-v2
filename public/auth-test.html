@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supabase Auth Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="font-family: Arial; padding: 20px; max-width: 400px; margin: 0 auto;">
+  <h1>Direct Supabase Auth Test</h1>
+  <p>This bypasses React entirely</p>
+  
+  <div id="status">Loading...</div>
+  
+  <div style="margin-top: 20px;">
+    <input type="email" id="email" placeholder="Email" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+    <input type="password" id="password" placeholder="Password" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+    <button onclick="testSignup()" style="width: 100%; padding: 10px; background: blue; color: white; border: none; cursor: pointer;">
+      TEST SIGNUP
+    </button>
+  </div>
+  
+  <div id="result" style="margin-top: 20px; white-space: pre-wrap;"></div>
+
+  <script>
+    const SUPABASE_URL = 'https://gdhqjdfytekdecfpzrls.supabase.co';
+    // This is the ANON key - it's safe to expose in frontend
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // We'll need to get the real key
+    
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    async function testSignup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const resultDiv = document.getElementById('result');
+      
+      resultDiv.textContent = 'Signing up...';
+      
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password
+        });
+        
+        if (error) {
+          resultDiv.textContent = 'ERROR: ' + JSON.stringify(error, null, 2);
+        } else {
+          resultDiv.textContent = 'SUCCESS: ' + JSON.stringify(data, null, 2);
+        }
+      } catch (err) {
+        resultDiv.textContent = 'CATCH ERROR: ' + err.message;
+      }
+    }
+    
+    // Check current session
+    supabase.auth.getSession().then(({ data }) => {
+      document.getElementById('status').textContent = 
+        data.session ? 'Logged in as: ' + data.session.user.email : 'Not logged in';
+    });
+  </script>
+</body>
+</html>
