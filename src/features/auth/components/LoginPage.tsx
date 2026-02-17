@@ -18,13 +18,15 @@ export function LoginPage() {
 
     try {
       if (isSignUp) {
+        console.log('Starting signup for:', email);
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
         });
 
         if (signUpError) {
-          setError(signUpError.message);
+          console.error('Signup error:', signUpError);
+          setError(signUpError.message + ' (Code: ' + signUpError.status + ')');
           setStatus('');
           return;
         }
@@ -74,8 +76,9 @@ export function LoginPage() {
         setStatus('Signed in! Redirecting...');
         setTimeout(() => navigate('/projects'), 1000);
       }
-    } catch (err) {
-      setError((err as Error).message);
+    } catch (err: any) {
+      console.error('Catch error:', err);
+      setError('Error: ' + (err?.message || err?.toString() || 'Unknown error'));
       setStatus('');
     }
   };
