@@ -1,14 +1,34 @@
 import { useParams } from 'react-router-dom';
 import { useStore } from '../shared/lib/store';
 import { ArrowLeft, Building2, MapPin, Calendar, Copy, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const ProjectDetailPage = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const { projects, deleteProject, duplicateProject } = useStore();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const project = projects.find(p => p.id === projectId);
+  
+  // Determine active tab based on current path
+  const getActiveTab = () => {
+    const path = location.pathname;
+    if (path.includes('/blueprints')) return 'Blueprints';
+    if (path.includes('/estimates')) return 'Estimates';
+    if (path.includes('/timeline')) return 'Timeline';
+    return 'Overview';
+  };
+  
+  const activeTab = getActiveTab();
+  
+  const handleTabClick = (tab: string) => {
+    if (tab === 'Overview') {
+      navigate(`/projects/${projectId}`);
+    } else {
+      navigate(`/projects/${projectId}/${tab.toLowerCase()}`);
+    }
+  };
   
   if (!project) {
     return (
@@ -95,8 +115,9 @@ export const ProjectDetailPage = () => {
           {['Overview', 'Blueprints', 'Estimates', 'Timeline'].map((tab) => (
             <button
               key={tab}
+              onClick={() => handleTabClick(tab)}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-                tab === 'Overview' 
+                tab === activeTab 
                   ? 'border-blue-500 text-blue-400' 
                   : 'border-transparent text-slate-400 hover:text-white'
               }`}

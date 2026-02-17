@@ -6,7 +6,10 @@
 import { useState, useCallback, useRef } from 'react';
 import { Upload, File, X, FileText, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useStore } from '../../../shared/lib/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { analyzeBlueprintAndPlaceDevices, placementsToDevices } from '../../../services/devicePlacementAI';
+import { pdfToImage } from '../../../services/pdfProcessor';
+import type { PlacementDevice } from '../../../services/devicePlacementAI';
 
 interface UploadFile {
   id: string;
@@ -30,11 +33,14 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 export function BlueprintUploadPage() {
   const navigate = useNavigate();
-  const { projects } = useStore();
+  const [searchParams] = useSearchParams();
+  const projectIdFromUrl = searchParams.get('projectId');
+  const { projects, blueprints, addDevice } = useStore();
   const [files, setFiles] = useState<UploadFile[]>([]);
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('');
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(projectIdFromUrl || '');
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedSystemType, setSelectedSystemType] = useState<SystemType>('fire');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {

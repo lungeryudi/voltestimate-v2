@@ -7,6 +7,8 @@ import { ProjectDetailPage } from './ProjectDetailPage';
 import { EstimatesPage } from './EstimatesPage';
 import { BlueprintsPage } from './BlueprintsPage';
 import { SettingsPage } from './SettingsPage';
+import { EstimateDetailPage } from '../pages/EstimateDetailPage';
+import { BlueprintUploadPage } from '../features/blueprints/pages/BlueprintUploadPage';
 import '../index.css';
 
 function App() {
@@ -33,8 +35,12 @@ function App() {
                   <Route path="/" element={<Navigate to="/projects" replace />} />
                   <Route path="/projects" element={<ProjectsPage />} />
                   <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
+                  <Route path="/projects/:projectId/blueprints" element={<BlueprintsPage />} />
+                  <Route path="/projects/:projectId/estimates" element={<EstimatesPage />} />
                   <Route path="/blueprints" element={<BlueprintsPage />} />
+                  <Route path="/blueprints/upload" element={<BlueprintUploadPage />} />
                   <Route path="/estimates" element={<EstimatesPage />} />
+                  <Route path="/estimates/:estimateId" element={<EstimateDetailPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Routes>
               </AppShell>
