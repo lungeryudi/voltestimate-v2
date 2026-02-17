@@ -144,7 +144,7 @@ export function useAuth(): UseAuthReturn {
   const signUp = useCallback(async (email: string, password: string, fullName: string) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -154,9 +154,26 @@ export function useAuth(): UseAuthReturn {
 
     if (error) {
       setState(prev => ({ ...prev, isLoading: false, error }));
+      return { error };
     }
 
-    return { error };
+    // Create profile row for new user
+    if (data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          full_name: fullName,
+          created_at: new Date().toISOString()
+        });
+      
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+        // Don't fail signup if profile creation fails
+      }
+    }
+
+    return { error: null };
   }, []);
 
   // Sign out
