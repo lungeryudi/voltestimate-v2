@@ -2,7 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npm install -g serve && serve -s dist -l 3000"
+startCommand = "npx serve -s dist -l 3000"
 restartPolicyType = "on_failure"
 
 [env]
