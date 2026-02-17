@@ -2,9 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npm run preview"
-healthcheckPath = "/"
-healthcheckTimeout = 100
+startCommand = "npm install -g serve && serve -s dist -l 3000"
 restartPolicyType = "on_failure"
 
 [env]
