@@ -19,18 +19,29 @@ export function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted', { isSignUp, email });
 
-    if (isSignUp) {
-      const { error } = await signUp(email, password, fullName);
-      if (!error) {
-        // Account created successfully - user is auto-signed in
-        navigate(from, { replace: true });
+    try {
+      if (isSignUp) {
+        console.log('Calling signUp...');
+        const { error } = await signUp(email, password, fullName);
+        console.log('signUp result', { error });
+        if (!error) {
+          console.log('Signup success, navigating...');
+          navigate(from, { replace: true });
+        }
+      } else {
+        console.log('Calling signIn...');
+        const { error } = await signIn(email, password);
+        console.log('signIn result', { error });
+        if (!error) {
+          console.log('Signin success, navigating...');
+          navigate(from, { replace: true });
+        }
       }
-    } else {
-      const { error } = await signIn(email, password);
-      if (!error) {
-        navigate(from, { replace: true });
-      }
+    } catch (err) {
+      console.error('Submit error:', err);
+      alert('Error: ' + (err as Error).message);
     }
   };
 
